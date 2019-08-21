@@ -1,0 +1,14 @@
+apiVersion: skaffold/v1beta7
+kind: Config
+build:
+  artifacts:
+  - image: gcr.io/kupping/github.com/maiconpintoabreu/kupping/backend
+    context: .
+deploy:
+  kubectl:
+    manifests:
+    - charts/configmap.yaml
+    - charts/deployment.yaml
+    - charts/pvc.yaml
+    # - charts/horizontal-pod-autoscaler.yaml
+    - charts/service.yaml

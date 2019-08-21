@@ -1,0 +1,14 @@
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "kupping-backend-config"
+  namespace: "default"
+  labels:
+    app: "kupping-backend"
+data:
+  MONGO: "mongo"
+  MONGO_PREFIX: "mongodb://"
+  MONGO_USER: "kuppinguserusuario"
+  MONGO_PASSWORD: "123asd123z"
+  MONGO_PARAMS: ""
+  MONGO_DATABASE: "kupping"

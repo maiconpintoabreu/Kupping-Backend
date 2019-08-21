@@ -1,0 +1,19 @@
+# apiVersion: "autoscaling/v2beta1"
+# kind: "HorizontalPodAutoscaler"
+# metadata:
+#   name: "kupping-backend-hpa"
+#   namespace: "default"
+#   labels:
+#     app: "kupping-backend"
+# spec:
+#   scaleTargetRef:
+#     kind: "Deployment"
+#     name: "kupping-backend"
+#     apiVersion: "apps/v1beta1"
+#   minReplicas: 1
+#   maxReplicas: 1
+#   metrics:
+#   - type: "Resource"
+#     resource:
+#       name: "cpu"
+#       targetAverageUtilization: 80

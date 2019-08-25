@@ -19,6 +19,9 @@ router.put('/private/danceclass/:id', checkLogin,checkOrganizerAccess, danceClas
 router.delete('/private/danceclass/:id', checkLogin,checkOrganizerAccess, danceClassController.deleteDanceClass);
 router.get('/private/dancestyle', checkLogin,checkOrganizerAccess, danceStyleController.getPrivateDanceStyles);
 router.post('/private/danceclass', checkLogin,checkOrganizerAccess, danceClassController.insertDanceClass);
+router.post('/private/danceclass/:id/checkin/:studentId', checkLogin,checkOrganizerAccess, danceClassController.checkin);
+
+
 router.post('/private/student', checkLogin,checkOrganizerAccess, studentController.insertStudent);
 router.post('/private/danceclass/:id/ticket/send', checkLogin,checkOrganizerAccess, ticketController.send);
 router.get('/private/student', checkLogin,checkOrganizerAccess, studentController.getStudentes);

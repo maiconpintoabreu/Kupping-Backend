@@ -14,13 +14,13 @@ let StudentSchema = new Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 StudentSchema.index({user: 1, email: 1}, {unique: true});
-StudentSchema.post("save",(doc)=>{
-    slack.webhook({
-      channel: "#kupping-events",
-      username: "kuppingbot",
-      text: JSON.stringify(doc)
-    }, function(err, response) {
-      //console.log(response);
-    });
-});
+// StudentSchema.post("save",(doc)=>{
+//     slack.webhook({
+//       channel: "#kupping-events",
+//       username: "kuppingbot",
+//       text: JSON.stringify(doc)
+//     }, function(err, response) {
+//       //console.log(response);
+//     });
+// });
 module.exports =  mongoose.model("Student",StudentSchema);

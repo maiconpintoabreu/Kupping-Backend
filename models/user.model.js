@@ -34,17 +34,17 @@ UserSchema.pre('save', function(next) {
     });
 });
 
-UserSchema.post("save",(doc)=>{
-    let docWithoutPassword = {password:""};
-    docWithoutPassword = Object.assign(doc,docWithoutPassword);
-    slack.webhook({
-      channel: "#kupping-events",
-      username: "kuppingbot",
-      text: JSON.stringify(docWithoutPassword)
-    }, function(err, response) {
-      //console.log(response);
-    });
-});
+// UserSchema.post("save",(doc)=>{
+//     let docWithoutPassword = {password:""};
+//     docWithoutPassword = Object.assign(doc,docWithoutPassword);
+//     // slack.webhook({
+//     //   channel: "#kupping-events",
+//     //   username: "kuppingbot",
+//     //   text: JSON.stringify(docWithoutPassword)
+//     // }, function(err, response) {
+//     //   //console.log(response);
+//     // });
+// });
 UserSchema.methods.comparePassword = function(candidatePassword, cb) {
     bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
         if (err) return cb(err);

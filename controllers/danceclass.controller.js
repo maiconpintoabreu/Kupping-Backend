@@ -3,6 +3,7 @@ const citiesbycountry = require("../models/citiesbycountry").cities;
 const DanceClass = moduleModel.getDanceClassModel();
 const DanceClassPast = moduleModel.getDanceClassPastModel();
 const Student = moduleModel.getStudentModel();
+const Checkin = moduleModel.getCheckinModel();
 const moment = require('moment');
 
 //TODO:Create a external service for it
@@ -155,6 +156,43 @@ exports.getPrivateDanceClass = function (req, res) {
         res.status(200).send(danceClass || {});
      }).populate("danceStyle").populate("students");
 };
+//TODO: make all response send be only 1 method
+exports.checkin = function (req, res) {
+    console.log("id",req.params.id,"studentId",req.params.studentId)
+    DanceClass.findOne({_id:req.params.id,user:req.client.id}, function(err, danceClass) {
+        if(danceClass){
+            const student = danceClass.students.find(s=>s._id = req.params.studentId);
+            if(student){
+                Checkin.findOne({student:req.params.studentId,danceClass:req.params.id}).then(resCheckinSearch=>{
+                    if(resCheckinSearch){
+                        res.status(400).send({status:false,message:"Student Already Checkedin "+resCheckinSearch.dateCreated});    
+                    }else{
+                        let checkin = new Checkin({student:req.params.studentId,danceClass:req.params.id});
+                        checkin.save(err=>{
+                            if(!err){
+                                res.status(200).send({status:true,message:"Student Checkin Success"});    
+                            }else{
+                                res.status(500).send({status:false,message:"Error on Checking Checkin"});
+                            }
+                        })
+                    }
+                }).catch(errCheckinSearch=>{
+                    console.error(errCheckinSearch);
+                    res.status(500).send({status:false,message:"Error on Checking Checkin"});    
+                })
+            }else{
+                res.status(404).send({status:true,message:"Student Not Found"})    
+            }
+        }else{
+            if(err){
+                res.status(500).send(err)    
+            }else
+            res.status(404).send({status:true,message:"Event Not Found"})   
+        }
+     }).populate("danceStyle").populate("students").catch(err=>{
+         res.status(404).send(false)
+     });
+}
 exports.insertDanceClass = function (req, res) {
     req.body.user = req.client.id;
     delete(req.body.students);

@@ -7,6 +7,11 @@ metadata:
     app: "kupping-backend"
 spec:
   replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1 
+      maxUnavailable: 1
   selector:
     matchLabels:
       app: "kupping-backend"
@@ -21,14 +26,14 @@ spec:
           claimName: ticket-disk
       containers:
       - name: backend
-        image: gcr.io/kupping/github.com/maiconpintoabreu/kupping/backend
+        image: eu.gcr.io/k3s-tests/kupping/backend
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "10m"
+            memory: "256Mi"
+            cpu: "60m"
           limits:
-            memory: "128Mi"
-            cpu: "20m"
+            memory: "512Mi"
+            cpu: "160m"
         volumeMounts:
         - mountPath: "/var/tickets"
           name: tickets

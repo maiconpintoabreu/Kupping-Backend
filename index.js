@@ -6,13 +6,14 @@ const mongoose = require('mongoose');
 var helmet = require('helmet');
 const authRouter = require("./auth-route");
 const router = require("./router");
-
+var morgan = require('morgan')
 
 
 const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(bodyParser.json());
+app.use(morgan(':date[format] :remote-addr :method :url :status :res[content-length] - :response-time ms'))
 const port = process.env.PORT || 8082;
 const mongoUrl = process.env.MONGO || "localhost";
 const MONGO_PORT = process.env.MONGO_PORT || "";

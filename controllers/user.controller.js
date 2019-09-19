@@ -1,6 +1,7 @@
 const moduleModel = require("../models/module.model");
 const User = moduleModel.getUserModel();
 var jwt = require('jsonwebtoken');
+const secret = 'maicon££santanaABwinfqubw123££££££€!!!';
 exports.getUsers = function (req, res) {
     User.find({}, function(err, Users) {
         res.status(200).send(Users || []);
@@ -20,7 +21,7 @@ exports.login = function (req, res) {
                 if (err || !isMatch){ res.status(400).send("Username or Password Invalid");}else{
                 const token = jwt.sign({
                     data: {id:user._id,organizer:user.organizer,student:user.student}
-                }, 'maicon££santanaABwinfqubw123££££££€!!!', { expiresIn: '24h' });
+                }, secret, { expiresIn: '24h' });
                 res.status(200).json({token:token});
             }
         });
@@ -37,9 +38,7 @@ exports.insertUser = function (req, res) {
         password: req.body.password,
         company: req.body.company,
         student: req.body.student || false,
-        organizer: req.body.organizer || false,
-        dateCreated: new Date(),
-        dateModified: new Date(),
+        organizer: req.body.organizer || false
     });
     User.findOne({$or:[{email:user.email},{username:user.username}]}).then(resUser=>{
         if(!resUser){
@@ -50,7 +49,7 @@ exports.insertUser = function (req, res) {
                 }else{
                     const token = jwt.sign({
                         data: {id:results._id,organizer:results.organizer,student:results.student}
-                    }, 'maicon££santanaABwinfqubw123££££££€!!!', { expiresIn: '24h' });
+                    }, secret, { expiresIn: '24h' });
                     res.status(200).json({token:token});
                 }
             });

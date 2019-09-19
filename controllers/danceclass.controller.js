@@ -196,6 +196,18 @@ exports.checkin = function (req, res) {
 exports.insertDanceClass = function (req, res) {
     req.body.user = req.client.id;
     delete(req.body.students);
+    if(!req.body.fromDateDay){
+        const fromDateMoment = moment(req.body.fromDate);
+        req.body.fromDateDay = fromDateMoment.startOf('day');
+        req.body.fromDateWeek = fromDateMoment.startOf('week');
+        req.body.fromDateMonth = fromDateMoment.startOf('month');
+    }
+    if(!req.body.toDateDay){
+        const toDateMoment = moment(req.body.toDate);
+        req.body.toDateDay = toDateMoment.startOf('day');
+        req.body.toDateWeek = toDateMoment.startOf('week');
+        req.body.toDateMonth = toDateMoment.startOf('month');
+    }
     if(!req.body.repeat || req.body.repeat === "" || req.body.repeat === "monthly" || req.body.repeat === "weekly" ){
         const danceClass = new DanceClass(req.body);
         danceClass.save(function (err, results) {
@@ -203,7 +215,7 @@ exports.insertDanceClass = function (req, res) {
                 console.error(err);
                 res.status(500).send(err);
             }
-            res.status(200).send(results);
+            res.status(200).send({status:true,message:"Event Created"});
         });
     }else{
         res.status(400).send({text:"Invalid Repeat expected '' or monthly or weekly"});

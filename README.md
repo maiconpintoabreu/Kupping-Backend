@@ -9,6 +9,6 @@
 #### Run 
 ```npm install && node index.js```
 
-## Frontend + Backend + Mongodb
+## Backend + Mongodb
 ### Build Process
 ```docker-compose up --build```

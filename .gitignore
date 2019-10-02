@@ -62,3 +62,4 @@ typings/
 key.json
 token.json
 oauthkey.json
+certs

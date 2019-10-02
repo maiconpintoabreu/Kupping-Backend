@@ -1,0 +1,55 @@
+# Default values for charts.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: eu.gcr.io/k3s-tests/kupping/backend
+  tag: stable
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: [] #A Helm charA Helm chart for Kubernetest for Kubernetes
+nameOverride: "" #A Helm chart for Kubernetes
+fullnameOverride: ""
+hosts:
+- 'kuppingbackend.maicondev.com'
+service:
+  type: ClusterIP
+  port: 80
+  externalPort: 80
+  internalPort: 80
+  externalPortSSL: 443
+  internalPortSSL: 443
+
+ingress:
+  enabled: false
+  # annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # hosts:
+  #   - host: chart-example.local
+  #     paths: []
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# nodeSelector: {}
+
+# tolerations: []
+
+# affinity: {}

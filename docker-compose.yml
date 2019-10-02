@@ -11,7 +11,7 @@ services:
         ports:
             - 27017:27017
     backend:
-        build: backend/.
+        build: .
         restart: always
         environment:
             docker: "true"
@@ -24,6 +24,6 @@ services:
         ports:
             - "8080:80"
         volumes:
-            - "./backend/.:/backend-kupping"
+            - ".:/backend-kupping"
         depends_on: 
             - mongo

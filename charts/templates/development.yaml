@@ -1,0 +1,96 @@
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: {{ .Release.Name }}
+  namespace: "default"
+  labels:
+    app: {{ template "kupping-backend-helm.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata: 
+      labels:
+        app: {{ template "kupping-backend-helm.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+      - name: tickets
+        persistentVolumeClaim:
+          claimName: ticket-disk
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          resources:
+{{if .Values.resources.requests}}
+            requests:
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
+{{end}}              
+{{if .Values.resources.limits}}  
+            limits:
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
+{{end}}
+          volumeMounts:
+          - mountPath: "/var/tickets"
+            name: tickets
+          env:
+          - name: PORT
+            valueFrom:
+              configMapKeyRef:
+                key: PORT
+                name: kupping-backend-config
+          - name: PORTSSL
+            valueFrom:
+              configMapKeyRef:
+                key: PORTSSL
+                name: kupping-backend-config
+          - name: docker
+            valueFrom:
+              configMapKeyRef:
+                key: docker
+                name: kupping-backend-config
+          - name: MONGO
+            valueFrom:
+              configMapKeyRef:
+                key: MONGO
+                name: kupping-backend-config
+          - name: MONGO_PORT
+            valueFrom:
+              configMapKeyRef:
+                key: MONGO_PORT
+                name: kupping-backend-config
+          - name: MONGO_PREFIX
+            valueFrom:
+              configMapKeyRef:
+                key: MONGO_PREFIX
+                name: kupping-backend-config
+          - name: MONGO_USER
+            valueFrom:
+              configMapKeyRef:
+                key: MONGO_USER
+                name: kupping-backend-config
+          - name: MONGO_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: MONGO_PASSWORD
+                name: kupping-backend-config
+          - name: MONGO_PARAMS
+            valueFrom:
+              configMapKeyRef:
+                key: MONGO_PARAMS
+                name: kupping-backend-config
+          - name: MONGO_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                key: MONGO_DATABASE
+                name: kupping-backend-config

@@ -7,8 +7,8 @@ build:
 deploy:
   kubectl:
     manifests:
-    - charts/configmap.yaml
-    - charts/deployment.yaml
-    - charts/pvc.yaml
+    - charts/kubectl/configmap.yaml
+    - charts/kubectl/deployment.yaml
+    - charts/kubectl/pvc.yaml
     # - charts/horizontal-pod-autoscaler.yaml
-    - charts/service.yaml
+    - charts/kubectl/service.yaml

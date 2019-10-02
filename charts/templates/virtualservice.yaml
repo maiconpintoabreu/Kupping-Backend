@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}
+  namespace: default
+spec:
+  gateways:
+  - k3s-gateway
+  hosts:
+{{- range .Values.hosts}}
+  - {{ . | quote }}
+{{end}}
+  tls:
+  - match:
+    - port: {{ .Values.service.externalPortSSL }}
+      sni_hosts:
+{{- range .Values.hosts}}
+      - {{ . | quote }}
+{{end}}
+    route:
+    - destination:
+        host: {{ .Release.Name }}-service
+        port:
+          number: {{ .Values.service.externalPortSSL }}

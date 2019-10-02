@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const http = require('http');
+//const http = require('http');
+const https = require('https');
+const fs = require('fs');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 var helmet = require('helmet');
@@ -15,6 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan(':date[format] :remote-addr :method :url :status :res[content-length] - :response-time ms'))
 const port = process.env.PORT || 8082;
+const portSSL = process.env.PORTSSL || 8083;
 const mongoUrl = process.env.MONGO || "localhost";
 const MONGO_PORT = process.env.MONGO_PORT || "";
 const MONGO_PREFIX = process.env.MONGO_PREFIX || "mongodb://";
@@ -45,9 +48,16 @@ mongoose.connection.on('error', console.error)
     .on('disconnected', reconnect)
     .once('open', listen);
 
+const options = {
+    key: fs.readFileSync("certs/privkey.pem"),
+    cert: fs.readFileSync("certs/fullchain.pem")
+};
+      
 function listen(){
     app.use(authRouter);
     app.use(router);
-    http.createServer(app).listen(port);
-    console.log("Listening port: "+port);
+    // http.createServer(app).listen(port);
+    https.createServer(options,app).listen(portSSL);
+    // console.log("Listening port: "+port);
+    console.log("Listening port: "+portSSL);
 }

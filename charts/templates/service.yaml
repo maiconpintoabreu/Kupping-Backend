@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "kupping-backend-helm.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+  name: {{ .Release.Name }}-service
+  namespace: default
+spec:
+  ports:
+  - port: {{ .Values.service.externalPort }}
+    targetPort: {{ .Values.service.internalPort }}
+    protocol: TCP
+    name: {{ .Release.Name }}-service
+  - port: {{ .Values.service.externalPortSSL }}
+    targetPort: {{ .Values.service.internalPortSSL }}
+    protocol: TCP
+    name: {{ .Release.Name }}-service-ssl
+  selector:
+    app: {{ .Release.Name }}
+  type: {{ .Values.service.type }}

@@ -1,7 +1,8 @@
 const moduleModel = require("../models/module.model");
 const User = moduleModel.getUserModel();
 var jwt = require('jsonwebtoken');
-const secret = 'maicon££santanaABwinfqubw123££££££€!!!';
+
+const jwtSecret = process.env.JWT_SECRET || "maiconSantanaKupping";
 exports.getUsers = function (req, res) {
     User.find({}, function(err, Users) {
         res.status(200).send(Users || []);
@@ -21,7 +22,7 @@ exports.login = function (req, res) {
                 if (err || !isMatch){ res.status(400).send("Username or Password Invalid");}else{
                 const token = jwt.sign({
                     data: {id:user._id,organizer:user.organizer,student:user.student}
-                }, secret, { expiresIn: '24h' });
+                }, jwtSecret, { expiresIn: '24h' });
                 res.status(200).json({token:token});
             }
         });
@@ -49,7 +50,7 @@ exports.insertUser = function (req, res) {
                 }else{
                     const token = jwt.sign({
                         data: {id:results._id,organizer:results.organizer,student:results.student}
-                    }, secret, { expiresIn: '24h' });
+                    }, jwtSecret, { expiresIn: '24h' });
                     res.status(200).json({token:token});
                 }
             });

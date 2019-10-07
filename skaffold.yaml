@@ -1,14 +1,26 @@
 apiVersion: skaffold/v1beta7
 kind: Config
 build:
+  tagPolicy:
+    sha256: {}
   artifacts:
   - image: eu.gcr.io/k3s-tests/kupping/backend
-    context: .
 deploy:
-  kubectl:
-    manifests:
-    - charts/kubectl/configmap.yaml
-    - charts/kubectl/deployment.yaml
-    - charts/kubectl/pvc.yaml
-    # - charts/horizontal-pod-autoscaler.yaml
-    - charts/kubectl/service.yaml
+  helm:
+    releases:
+    - name: kupping-backend-helm
+      chartPath: ./charts
+      wait: true
+      #valuesFiles:
+      #- helm-skaffold-values.yaml
+      values:
+        image: eu.gcr.io/k3s-tests/kupping/backend
+      #recreatePods will pass --recreate-pods to helm upgrade
+      #recreatePods: true
+      #overrides builds an override values.yaml file to run with the helm deploy
+      #overrides:
+      # some:
+      #   key: someValue
+      #setValues get appended to the helm deploy with --set.
+      #setValues:
+        #some.key: someValue

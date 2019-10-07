@@ -21,6 +21,7 @@ services:
             MONGO_PREFIX: "mongodb://"
             MONGO_USER: "kuppinguserusuario"
             MONGO_PASSWORD: "123asd123z"
+            JWT_SECRET: "ma££sanABwinfquw123@@££££€"
         ports:
             - "8080:80"
         volumes:

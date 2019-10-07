@@ -1,0 +1,14 @@
+apiVersion: skaffold/v1beta7
+kind: Config
+build:
+  artifacts:
+  - image: eu.gcr.io/k3s-tests/kupping/backend
+    context: .
+deploy:
+  kubectl:
+    manifests:
+    - charts/kubectl/configmap.yaml
+    - charts/kubectl/deployment.yaml
+    - charts/kubectl/pvc.yaml
+    # - charts/horizontal-pod-autoscaler.yaml
+    - charts/kubectl/service.yaml

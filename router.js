@@ -15,6 +15,7 @@ router.get('/public/event', danceClassController.getDanceClasses);
 router.get('/public/event/:id', danceClassController.getDanceClass);
 router.post('/public/event/:danceclassid/booking', danceClassController.booking);
 router.get('/public/dancestyle', danceStyleController.getDanceStyles);
+router.get('/public/style', danceStyleController.getDanceStyles);
 router.post('/public/user', checkLogin, userController.insertUser);
 
 router.get('/private/danceclass', checkLogin,checkOrganizerAccess, danceClassController.getPrivateDanceClasses);

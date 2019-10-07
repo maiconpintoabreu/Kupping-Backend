@@ -10,6 +10,11 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.replicaCount }}
+      maxUnavailable: 0
+    type: RollingUpdate
   selector:
     matchLabels:
       app: {{ .Release.Name }}

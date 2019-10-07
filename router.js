@@ -2,52 +2,36 @@ var jwt = require('jsonwebtoken');
 const router = require("express").Router();
 const userController = require('./controllers/user.controller');
 const studentController = require('./controllers/student.controller');
-const danceClassController = require('./controllers/danceclass.controller');
-const danceStyleController = require('./controllers/dancestyle.controller');
+const eventController = require('./controllers/event.controller');
+const styleController = require('./controllers/style.controller');
 const ticketController = require('./controllers/ticket.controller');
 
-//TODO: remove danceclass and dancestyle endpoints and rename Controllers
-
-router.get('/public/danceclass', danceClassController.getDanceClasses);
-router.get('/public/danceclass/:id', danceClassController.getDanceClass);
-router.post('/public/danceclass/:danceclassid/booking', danceClassController.booking);
-router.get('/public/event', danceClassController.getDanceClasses);
-router.get('/public/event/:id', danceClassController.getDanceClass);
-router.post('/public/event/:danceclassid/booking', danceClassController.booking);
-router.get('/public/dancestyle', danceStyleController.getDanceStyles);
-router.get('/public/style', danceStyleController.getDanceStyles);
+router.get('/public/event', eventController.getEvents);
+router.get('/public/event/:id', eventController.getEvent);
+router.post('/public/event/:eventsid/booking', eventController.booking);
+router.get('/public/style', styleController.getStyles);
 router.post('/public/user', checkLogin, userController.insertUser);
 
-router.get('/private/danceclass', checkLogin,checkOrganizerAccess, danceClassController.getPrivateDanceClasses);
-router.get('/private/danceclassbystudent', checkLogin,checkOrganizerAccess, danceClassController.getPrivateDanceClassesByStudent);
-router.get('/private/danceclass/:id', checkLogin,checkOrganizerAccess, danceClassController.getPrivateDanceClass);
-router.put('/private/danceclass/:id', checkLogin,checkOrganizerAccess, danceClassController.updateDanceClass);
-router.delete('/private/danceclass/:id', checkLogin,checkOrganizerAccess, danceClassController.deleteDanceClass);
-router.get('/private/dancestyle', checkLogin,checkOrganizerAccess, danceStyleController.getPrivateDanceStyles);
-router.post('/private/danceclass', checkLogin,checkOrganizerAccess, danceClassController.insertDanceClass);
-router.post('/private/danceclass/:id/checkin/:studentId', checkLogin,checkOrganizerAccess, danceClassController.checkin);
-
-router.get('/private/event', checkLogin,checkOrganizerAccess, danceClassController.getPrivateDanceClasses);
-router.get('/private/eventbystudent', checkLogin,checkOrganizerAccess, danceClassController.getPrivateDanceClassesByStudent);
-router.get('/private/event/:id', checkLogin,checkOrganizerAccess, danceClassController.getPrivateDanceClass);
-router.put('/private/event/:id', checkLogin,checkOrganizerAccess, danceClassController.updateDanceClass);
-router.delete('/private/event/:id', checkLogin,checkOrganizerAccess, danceClassController.deleteDanceClass);
-router.get('/private/style', checkLogin,checkOrganizerAccess, danceStyleController.getPrivateDanceStyles);
-router.post('/private/event', checkLogin,checkOrganizerAccess, danceClassController.insertDanceClass);
-router.post('/private/event/:id/checkin/:studentId', checkLogin,checkOrganizerAccess, danceClassController.checkin);
+router.get('/private/event', checkLogin,checkOrganizerAccess, eventController.getPrivateEvents);
+router.get('/private/eventbystudent', checkLogin,checkOrganizerAccess, eventController.getPrivateEventsByStudent);
+router.get('/private/event/:id', checkLogin,checkOrganizerAccess, eventController.getPrivateEvent);
+router.put('/private/event/:id', checkLogin,checkOrganizerAccess, eventController.updateEvent);
+router.delete('/private/event/:id', checkLogin,checkOrganizerAccess, eventController.deleteEvent);
+router.get('/private/style', checkLogin,checkOrganizerAccess, styleController.getPrivateStyles);
+router.post('/private/event', checkLogin,checkOrganizerAccess, eventController.insertEvent);
+router.post('/private/event/:id/checkin/:studentId', checkLogin,checkOrganizerAccess, eventController.checkin);
 
 
 router.post('/private/student', checkLogin,checkOrganizerAccess, studentController.insertStudent);
-router.post('/private/danceclass/:id/ticket/send', checkLogin,checkOrganizerAccess, ticketController.send);
 router.post('/private/event/:id/ticket/send', checkLogin,checkOrganizerAccess, ticketController.send);
 router.get('/private/student', checkLogin,checkOrganizerAccess, studentController.getStudentes);
 router.get('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.getStudent);
 router.put('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.updateStudent);
 router.delete('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.deleteStudent);
 
-router.get("/private/countries", checkLogin,checkOrganizerAccess, danceClassController.autoCompleteCountry);
-router.get("/private/cities", checkLogin,checkOrganizerAccess, danceClassController.autoCompleteCity);
-danceStyleController.start();
+router.get("/private/countries", checkLogin,checkOrganizerAccess, eventController.autoCompleteCountry);
+router.get("/private/cities", checkLogin,checkOrganizerAccess, eventController.autoCompleteCity);
+styleController.start();
 
 module.exports = router;
 const jwtSecret = process.env.JWT_SECRET || "maiconSantanaKupping";

@@ -1,6 +1,6 @@
 const moduleModel = require("../models/module.model");
 const fileController = require("./file.controller");
-const DanceClass = moduleModel.getDanceClassModel();
+const DanceClass = moduleModel.getEventModel();
 const Student = moduleModel.getStudentModel();
 const {google} = require('googleapis');
 const fs = require('fs');

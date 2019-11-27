@@ -21,7 +21,7 @@ let EventSchema = new Schema({
     place: { type: Place, ref: 'Place' },
     repeat: { type:String,index:true},
     students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }],
-    danceStyle: { type: mongoose.Schema.Types.ObjectId, ref: 'DanceStyle' },
+    style: { type: mongoose.Schema.Types.ObjectId, ref: 'Style' },
     dateCreated: {type: Date, required: true, default:new Date()},
     dateModified: {type: Date, required: true, default:new Date()},
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

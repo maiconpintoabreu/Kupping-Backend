@@ -48,6 +48,10 @@ function checkLogin(req,res,next) {
                             return next();
                         }else{
                             res.status(401).send("Token not valid");
+
+
+
+                            
                         }
                     }).catch(errUser=>{
                         res.status(401).send("Token not valid");

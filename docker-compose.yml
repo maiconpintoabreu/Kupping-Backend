@@ -7,7 +7,7 @@ services:
             - MONGO_INITDB_ROOT_PASSWORD=123asd123z
             - MONGO_INITDB_DATABASE=kupping
         volumes:
-            - "./backend/data:/data"
+            - "./data:/data"
         ports:
             - 27017:27017
     backend:
@@ -23,7 +23,7 @@ services:
             MONGO_PASSWORD: "123asd123z"
             JWT_SECRET: "ma££sanABwinfquw123@@££££€"
         ports:
-            - "8080:80"
+            - "8443:8083"
         volumes:
             - ".:/backend-kupping"
         depends_on: 

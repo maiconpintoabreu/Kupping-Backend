@@ -15,7 +15,7 @@ let UserSchema = new Schema({
     student: {type: Boolean, required: true},
     organizer: {type: Boolean, required: true},
     students: [{type: mongoose.Schema.Types.ObjectId, ref: 'Student'}],
-    danceClass: [{type: mongoose.Schema.Types.ObjectId, ref: 'DanceClass', index: true}],
+    events: [{type: mongoose.Schema.Types.ObjectId, ref: 'Event', index: true}],
     dateCreated: {type: Date, required: true, default:new Date()},
     dateModified: {type: Date, required: true, default:new Date()},
 });

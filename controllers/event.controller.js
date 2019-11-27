@@ -120,20 +120,20 @@ exports.autoCompleteCity = (req,res)=>{
 }
 exports.getEvents = function (req, res) {
     // TODO: add isPublic
-    EventModel.find({}, function(err, event) {
-        res.status(200).send(event || []);
+    EventModel.find({}, function(err, events) {
+        res.status(200).send(events || []);
      }).populate("style");
 };
 exports.getEvent = function (req, res) {
-    EventModel.findOne({_id:req.params.id}, function(err, danceClass) {
+    EventModel.findOne({_id:req.params.id}, function(err, event) {
         //filter by public fields
-        danceClass.students = null;
-        res.status(200).send(danceClass || {});
+        event.students = null;
+        res.status(200).send(event || {});
      }).populate("style");
 };
 exports.getPrivateEvents = function (req, res) {
-    EventModel.find({user: req.client.id}, function(err, event) {
-        res.status(200).send(event || []);
+    EventModel.find({user: req.client.id}, function(err, events) {
+        res.status(200).send(events || []);
      }).populate("style");
 };
 exports.getPrivateEventsByStudent = function (req, res) {
@@ -149,8 +149,8 @@ exports.getPrivateEventsByStudent = function (req, res) {
     })
 }
 exports.getPrivateEvent = function (req, res) {
-    EventModel.findOne({_id:req.params.id,user:req.client.id}, function(err, danceClass) {
-        res.status(200).send(danceClass || {});
+    EventModel.findOne({_id:req.params.id,user:req.client.id}, function(err, event) {
+        res.status(200).send(event || {});
      }).populate("style").populate("students");
 };
 //TODO: make all response send be only 1 method
@@ -211,8 +211,9 @@ exports.insertEvent = function (req, res) {
             if(err) {
                 console.error(err);
                 res.status(500).send({status:false,message:err})
+            }else{
+                res.status(200).send({status:true,message:"Event Created"});
             }
-            res.status(200).send({status:true,message:"Event Created"});
         });
     }else{
         res.status(400).send({status:false,message:"Invalid Repeat expected '' or monthly or weekly"})

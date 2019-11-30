@@ -38,17 +38,10 @@ jobs:
         echo $SSL_FULLCHAIN > certs/fullchain.pem && echo $SSL_PRIVKEY > certs/privkey.pem
         mkdir ~/.kube
         echo $KUBE_CONF > ~/.kube/config
-      
-    # Build the Docker image
-    - name: Build
-      run: |        
-        gcloud auth activate-service-account --key-file=tempKeyFile.json
-        gcloud auth configure-docker
-        skaffold build
 
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |
         gcloud auth activate-service-account --key-file=tempKeyFile.json
         gcloud auth configure-docker
-        skaffold deploy
+        skaffold run

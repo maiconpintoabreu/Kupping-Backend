@@ -14,6 +14,7 @@ env:
   SSL_PRIVKEY: ${{ secrets.SSL_PRIVKEY }}
   CONFIG_MAP: ${{ secrets.CONFIG_MAP }}
   GCLOUD_AUTH_JSON: ${{ secrets.GCLOUD_AUTH_JSON }}
+  KUBE_CONF: ${{ secrets.$KUBE_CONF }}
 
 jobs:
   setup-build-publish-deploy:

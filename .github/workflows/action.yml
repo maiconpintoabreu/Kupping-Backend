@@ -13,6 +13,7 @@ env:
   SSL_FULLCHAIN: ${{ secrets.SSL_FULLCHAIN }}
   SSL_PRIVKEY: ${{ secrets.SSL_PRIVKEY }}
   CONFIG_MAP: ${{ secrets.CONFIG_MAP }}
+  GCLOUD_AUTH_JSON: ${{ secrets.GCLOUD_AUTH_JSON }}
 
 jobs:
   setup-build-publish-deploy:
@@ -29,7 +30,7 @@ jobs:
     - run: |
         # Set up docker to authenticate
         # via gcloud command-line tool.
-        echo $GCLOUD_AUTH > tempKeyFile.json
+        echo $GCLOUD_AUTH_JSON > tempKeyFile.json
         curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
         chmod +x skaffold
         sudo mv skaffold /usr/local/bin

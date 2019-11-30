@@ -29,7 +29,7 @@ jobs:
     - run: |
         # Set up docker to authenticate
         # via gcloud command-line tool.
-        gcloud auth configure-docker
+        echo $GCLOUD_AUTH > tempKeyFile.json
         curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
         chmod +x skaffold
         sudo mv skaffold /usr/local/bin
@@ -41,9 +41,13 @@ jobs:
     # Build the Docker image
     - name: Build
       run: |        
+        gcloud auth activate-service-account --key-file=tempKeyFile.json
+        gcloud auth configure-docker
         skaffold build
 
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |
+        gcloud auth activate-service-account --key-file=tempKeyFile.json
+        gcloud auth configure-docker
         skaffold deploy

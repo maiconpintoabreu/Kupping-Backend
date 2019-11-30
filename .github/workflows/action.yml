@@ -35,12 +35,12 @@ jobs:
         sudo mv skaffold /usr/local/bin
         mkdir certs
         echo $SSL_FULLCHAIN > certs/fullchain.pem && echo $SSL_PRIVKEY > certs/privkey.pem
-        echo $GCP_SSL_PUB > ~/.ssh/gcp-3.pub
+        echo $GCP_SSL_PUB > gcp-3.pub
  
     # Create tunner for the k8s connection
     - name: Create_Tunnel
       run: |        
-        ssh -f -N -L 6443:localhost:8443 35.246.1.136
+        ssh -f -N -L 6443:localhost:8443 -i gcp-3.pub 35.246.1.136
       
     # Build the Docker image
     - name: Build

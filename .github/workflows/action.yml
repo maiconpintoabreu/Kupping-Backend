@@ -39,7 +39,7 @@ jobs:
         mkdir ~/.kube
         echo $KUBE_CONF > ~/.kube/config
         export KUBECONFIG=$KUBECONFIG:~/.kube/config
-        snap install helm --channel=2.16/stable --classic
+        sudo -E snap install helm --channel=2.16/stable --classic
         kubectl get po
 
     # Deploy the Docker image to the GKE cluster

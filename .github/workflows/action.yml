@@ -36,15 +36,15 @@ jobs:
         sudo mv skaffold /usr/local/bin
         mkdir certs
         echo $SSL_FULLCHAIN > certs/fullchain.pem && echo $SSL_PRIVKEY > certs/privkey.pem
-        mkdir ~/.kube
-        echo $KUBE_CONF > ~/.kube/config
-        export KUBECONFIG=$KUBECONFIG:~/.kube/config
+        mkdir $HOME/.kube
+        echo $KUBE_CONF > $HOME/.kube/config
+        export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
         sudo -E snap install helm --channel=2.16/stable --classic
-        kubectl config view
+        kubectl get po --kubeconfig=$HOME/.kube/config
 
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |
         gcloud auth activate-service-account --key-file=tempKeyFile.json
         gcloud auth configure-docker
-        skaffold run
+        skaffold run --kube-context=$HOME/.kube/config

@@ -1,0 +1,56 @@
+name: Build and Deploy with Skaffold
+
+on:
+  push:
+    branches:
+    - master
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  GKE_KEY: ${{ secrets.GKE_KEY }}
+  GKE_EMAIL: ${{ secrets.GKE_EMAIL }}
+  SSL_FULLCHAIN: ${{ secrets.SSL_FULLCHAIN }}
+  SSL_PRIVKEY: ${{ secrets.SSL_PRIVKEY }}
+  CONFIG_MAP: ${{ secrets.CONFIG_MAP }}
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, and Deploy
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@master
+
+    # Setup gcloud CLI
+    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '270.0.0'
+        service_account_email: ${{ secrets.GKE_EMAIL }}
+        service_account_key: ${{ secrets.GKE_KEY }}
+
+    # Configure docker to use the gcloud command-line tool as a credential helper
+    - run: |
+        # Set up docker to authenticate
+        # via gcloud command-line tool.
+        gcloud auth configure-docker
+        mkdir certs
+        echo $secrets.SSL_FULLCHAIN > certs/fullchain.pem && echo $secrets.SSL_PRIVKEY > certs/privkey.pem
+        
+      
+    # Build the Docker image
+    - name: Build
+      run: |        
+        skaffold build
+        
+    # Set up kustomize
+    - name: Set up Kustomize
+      run: |
+        curl -o kustomize --location https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+        chmod u+x ./kustomize
+
+    # Deploy the Docker image to the GKE cluster
+    - name: Deploy
+      run: |
+        gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
+        skaffold deploy

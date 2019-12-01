@@ -38,7 +38,9 @@ jobs:
         mkdir certs
         echo $SSL_FULLCHAIN > certs/fullchain.pem && echo $SSL_PRIVKEY > certs/privkey.pem
         mkdir $HOME/.kube
-        echo $KUBE_CONF > $HOME/.kube/config
+        sudo apt install yq
+        
+        echo $KUBE_CONF | yq -y $HOME/.kube/config
         export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
         sudo -E snap install helm --channel=2.16/stable --classic
         cat $HOME/.kube/config

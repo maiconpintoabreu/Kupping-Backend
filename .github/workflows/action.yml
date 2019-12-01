@@ -24,19 +24,11 @@ jobs:
     - name: Kubectl
       run: |
         mkdir $HOME/.kube
-        export KUBETEST=$KUBETEST:$KUBE_CONF_CERTIFICATE
-        echo $GCLOUD_AUTH_JSON > tempKeyFile.json
-        cat tempKeyFile.json
-        echo $KUBETEST
-        envsubst '\$KUBE_CONF_CERTIFICATE \$KUBE_CONF_HOST \$KUBE_CONF_PASSWORD \$KUBE_CONF \$KUBE_CONF_USERNAME' < kubeconfig > $HOME/.kube/config 
+        echo $GCP_SSL_PUB > ~/.ssh/gcp-3.pub
+        scp -i $HOME/.ssh/gcp-3.pub 35.246.1.136/opt/kubeconfig $HOME/.kube/config
         export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
         kubectl get po --kubeconfig=$HOME/.kube/config
-      env:
-        KUBE_CONF_CERTIFICATE: ${{ secrets.KUBE_CONF_CERTIFICATE }}
-        KUBE_CONF_HOST: ${{ secrets.KUBE_CONF_HOST }}
-        KUBE_CONF_PASSWORD: ${{ secrets.KUBE_CONF_PASSWORD }}
-        KUBE_CONF: ${{ secrets.KUBE_CONF }}
-        KUBE_CONF_USERNAME: ${{ secrets.KUBE_CONF_USERNAME }}
+        echo $GCLOUD_AUTH_JSON > tempKeyFile.json
     - name: Dependencies
       run: |
         sudo -E snap install helm --channel=2.16/stable --classic

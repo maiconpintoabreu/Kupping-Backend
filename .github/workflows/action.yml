@@ -9,6 +9,7 @@ on:
 env:
   GKE_KEY: ${{ secrets.GKE_KEY }}
   GKE_EMAIL: ${{ secrets.GKE_EMAIL }}
+  GCP_SSL_PUB: ${{ secrets.GCP_SSL_PUB }}
   $GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
   SSL_FULLCHAIN: ${{ secrets.SSL_FULLCHAIN }}
   SSL_PRIVKEY: ${{ secrets.SSL_PRIVKEY }}
@@ -24,7 +25,7 @@ jobs:
     - name: Kubectl
       run: |
         mkdir $HOME/.kube
-        echo $GCP_SSL_PUB > ~/.ssh/gcp-3.pub
+        echo $GCP_SSL_PUB > $HOME/.ssh/gcp-3.pub
         scp -i $HOME/.ssh/gcp-3.pub 35.246.1.136/opt/kubeconfig $HOME/.kube/config
         export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
         kubectl get po --kubeconfig=$HOME/.kube/config

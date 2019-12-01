@@ -22,22 +22,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-
-    - name: Check Kubectl connection
-      uses: actions/gcloud/auth@master
-      env:
-        GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
-    - run: |
+    - name: Kubectl
+      run: |
         mkdir $HOME/.kube
         sudo -E snap install yq
         echo $KUBE_CONF | yq -y $HOME/.kube/config
         export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
         kubectl get po --kubeconfig=$HOME/.kube/config
-
-    - name: GCP Authenticate
-
-    # Configure docker to use the gcloud command-line tool as a credential helper
-    - run: |
         echo $GCLOUD_AUTH_JSON > tempKeyFile.json
         
     - name: Dependencies

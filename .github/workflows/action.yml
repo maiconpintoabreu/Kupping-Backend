@@ -24,6 +24,7 @@ jobs:
     - name: Kubectl
       run: |
         mkdir $HOME/.kube
+        export KUBETEST=$KUBETEST:$KUBE_CONF_CERTIFICATE
         envsubst '\$KUBE_CONF_CERTIFICATE \$KUBE_CONF_HOST \$KUBE_CONF_PASSWORD \$KUBE_CONF \$KUBE_CONF_USERNAME' < kubeconfig > $HOME/.kube/config 
         export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
         kubectl get po --kubeconfig=$HOME/.kube/config

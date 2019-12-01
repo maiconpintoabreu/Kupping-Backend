@@ -26,7 +26,7 @@ jobs:
     - name: Check Kubectl connection
     - run: |
         mkdir $HOME/.kube
-        sudo apt install yq
+        sudo -E snap install yq
         echo $KUBE_CONF | yq -y $HOME/.kube/config
         export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
         kubectl get po --kubeconfig=$HOME/.kube/config

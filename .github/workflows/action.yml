@@ -26,7 +26,7 @@ jobs:
       run: |
         mkdir $HOME/.kube && mkdir $HOME/.ssh
         echo $GCP_SSL_PUB > $HOME/.ssh/gcp-3.pub
-        scp -i $HOME/.ssh/gcp-3.pub 35.246.1.136/opt/kubeconfig $HOME/.kube/config
+        scp -i $HOME/.ssh/gcp-3.pub 35.246.1.136:/opt/kubeconfig $HOME/.kube/config
         export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
         kubectl get po --kubeconfig=$HOME/.kube/config
         echo $GCLOUD_AUTH_JSON > tempKeyFile.json

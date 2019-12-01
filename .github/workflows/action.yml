@@ -14,7 +14,11 @@ env:
   SSL_PRIVKEY: ${{ secrets.SSL_PRIVKEY }}
   CONFIG_MAP: ${{ secrets.CONFIG_MAP }}
   GCLOUD_AUTH_JSON: ${{ secrets.GCLOUD_AUTH_JSON }}
+  KUBE_CONF_CERTIFICATE: ${{ secrets.KUBE_CONF_CERTIFICATE }}
+  KUBE_CONF_HOST: ${{ secrets.KUBE_CONF_HOST }}
+  KUBE_CONF_PASSWORD: ${{ secrets.KUBE_CONF_PASSWORD }}
   KUBE_CONF: ${{ secrets.KUBE_CONF }}
+  KUBE_CONF_USERNAME: ${{ secrets.KUBE_CONF_USERNAME }}
 
 jobs:
   setup-build-publish-deploy:
@@ -25,8 +29,7 @@ jobs:
     - name: Kubectl
       run: |
         mkdir $HOME/.kube
-        sudo -E snap install yq
-        echo $KUBE_CONF | yq -y $HOME/.kube/config
+        envsubst '\$KUBE_CONF_CERTIFICATE \$KUBE_CONF_HOST \$KUBE_CONF_PASSWORD \$KUBE_CONF \$KUBE_CONF_USERNAME' < kubeconfig > $HOME/.kube/config 
         export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
         kubectl get po --kubeconfig=$HOME/.kube/config
         echo $GCLOUD_AUTH_JSON > tempKeyFile.json

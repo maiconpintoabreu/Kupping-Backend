@@ -1,3 +1,4 @@
+![](https://github.com/maiconpintoabreu/Kupping-Backend/.github/workflows/action.yml/badge.svg)
 # Kupping Backend
 
 ### [Live in Kubernetes](https://kupping.ngrok.io)

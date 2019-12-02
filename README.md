@@ -1,4 +1,4 @@
-![](https://github.com/maiconpintoabreu/Kupping-Backend/.github/workflows/action.yml/badge.svg)
+![](https://github.com/maiconpintoabreu/Kupping-Backend/workflows/Build%20and%20Deploy%20with%20Skaffold/badge.svg)
 # Kupping Backend
 
 ### [Live in Kubernetes](https://kupping.ngrok.io)

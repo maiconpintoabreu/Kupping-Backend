@@ -22,12 +22,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Kubectl
+    - name: Secrets
       run: |
         chmod +x .github/decrypt_secret.sh
         mkdir $HOME/.kube && mkdir $HOME/.ssh && mkdir certs
         .github/./decrypt_secret.sh
         echo $GCLOUD_AUTH_JSON > tempKeyFile.json
+      env:
+        SAFE_KEY: ${{ secrets.SAFE_KEY }}
     - name: Dependencies
       run: |
         sudo -E snap install helm --channel=2.16/stable --classic

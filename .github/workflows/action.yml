@@ -24,11 +24,9 @@ jobs:
     - uses: actions/checkout@master
     - name: Kubectl
       run: |
-        mkdir $HOME/.kube && mkdir $HOME/.ssh
-        echo $GCP_SSL_PUB > $HOME/.ssh/gcp-3.pub
-        scp -i $HOME/.ssh/gcp-3.pub 35.246.1.136:/opt/kubeconfig $HOME/.kube/config
-        export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
-        kubectl get po --kubeconfig=$HOME/.kube/config
+        chmod +x .github/decrypt_secret.sh
+        mkdir $HOME/.kube && mkdir $HOME/.ssh && mkdir certs
+        .github/./decrypt_secret.sh
         echo $GCLOUD_AUTH_JSON > tempKeyFile.json
     - name: Dependencies
       run: |
@@ -36,9 +34,6 @@ jobs:
         curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
         chmod +x skaffold
         sudo mv skaffold /usr/local/bin
-        mkdir certs
-        echo $SSL_FULLCHAIN > certs/fullchain.pem && echo $SSL_PRIVKEY > certs/privkey.pem
-
     # Deploy the Docker image to the GKE cluster
     - name: Deploy
       run: |

@@ -25,11 +25,13 @@ jobs:
     - name: Secrets
       run: |
         chmod +x .github/decrypt_secret.sh
-        mkdir $HOME/.kube && mkdir $HOME/.ssh && mkdir certs
         .github/./decrypt_secret.sh
         echo $GCLOUD_AUTH_JSON > tempKeyFile.json
       env:
         SAFE_KEY: ${{ secrets.SAFE_KEY }}
+    - name: Test Kubectl
+      run: |
+        kubectl get po
     - name: Dependencies
       run: |
         sudo -E snap install helm --channel=2.16/stable --classic
@@ -41,4 +43,4 @@ jobs:
       run: |
         gcloud auth activate-service-account --key-file=tempKeyFile.json
         gcloud auth configure-docker
-        skaffold run --kube-context=$HOME/.kube/config
+        skaffold run

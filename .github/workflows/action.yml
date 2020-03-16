@@ -34,7 +34,7 @@ jobs:
         kubectl get po
     - name: Dependencies
       run: |
-        sudo -E snap install helm --channel=2.16/stable --classic
+        curl -L https://git.io/get_helm.sh | bash
         curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
         chmod +x skaffold
         sudo mv skaffold /usr/local/bin

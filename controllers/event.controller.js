@@ -12,52 +12,57 @@ week_of_month = (date) => {
     prefixes = [1,2,3,4,5];
     return prefixes[0 | moment(date).date() / 7] 
 }
-cronEventRepeat = ()=>{
-    console.info("Cron:","Checking for events with repeat");
-    EventModel.find({toDate:{$lt:moment().valueOf()},$or:[{"repeat":"monthly"},{"repeat":"weekly"}]}).then(resEvent=>{
-        resEvent.forEach(element => {
-            pastObject = element.toObject();
-            pastObject.idRef = pastObject._id;
-            pastObject._id = undefined;
-            let past = new PastEventModel(pastObject);
-            const countWeeksToDate = week_of_month(moment(element.toDate).endOf("month"));
-            const countWeeksFromDate = week_of_month(moment(element.fromDate).endOf("month"));
+// cronEventRepeat = ()=>{
+//     console.info("Cron:","Checking for events with repeat");
+//     EventModel.find({toDate:{$lt:moment().valueOf()},$or:[{"repeat":"monthly"},{"repeat":"weekly"}]}).then(resEvent=>{
+//         resEvent.forEach(element => {
+//             pastObject = element.toObject();
+//             pastObject.idRef = pastObject._id;
+//             pastObject._id = undefined;
+//             let past = new PastEventModel(pastObject);
+//             const countWeeksToDate = week_of_month(moment(element.toDate).endOf("month"));
+//             const countWeeksFromDate = week_of_month(moment(element.fromDate).endOf("month"));
 
-            if(element.repeat === "monthly"){
-                element.toDate = moment(element.toDate).add(countWeeksToDate,"weeks").valueOf();
-                element.fromDate = moment(element.fromDate).add(countWeeksFromDate,"weeks").valueOf();
-            }else if(element.repeat === "weekly"){
-                element.toDate = moment(element.toDate).add(1,"weeks").valueOf();
-                element.fromDate = moment(element.fromDate).add(1,"weeks").valueOf();
-            }
-            element.students = [];
-            PastEventModel.create(past).then(resPast=>{
-                element.save(err=>{
-                    if(err) console.error("Error current:",err);  
-                })
-            }).catch(errpast=>{    
-                if(errpast) 
-                if(errpast.code != 11000 ){
-                    console.error("Error past:",errpast);
-                }else{
-                    element.save(err=>{
-                        if(err) console.error("Error current:",err);  
-                    })
-                }
-            })
-        });
-        console.log("Test:",resEvent.length);
-    }).catch(errEvent=>{
-        console.error("Error:",errEvent);
-    });
-    setTimeout(() => {
-        cronEventRepeat();
-    }, CRON_INTERVAL);
-};
-cronEventRepeat();
+//             if(element.repeat === "monthly"){
+//                 element.toDate = moment(element.toDate).add(countWeeksToDate,"weeks").valueOf();
+//                 element.fromDate = moment(element.fromDate).add(countWeeksFromDate,"weeks").valueOf();
+//             }else if(element.repeat === "weekly"){
+//                 element.toDate = moment(element.toDate).add(1,"weeks").valueOf();
+//                 element.fromDate = moment(element.fromDate).add(1,"weeks").valueOf();
+//             }
+//             element.students = [];
+//             PastEventModel.create(past).then(resPast=>{
+//                 element.save(err=>{
+//                     if(err) console.error("Error current:",err);  
+//                 })
+//             }).catch(errpast=>{    
+//                 if(errpast) 
+//                 if(errpast.code != 11000 ){
+//                     console.error("Error past:",errpast);
+//                 }else{
+//                     element.save(err=>{
+//                         if(err) console.error("Error current:",err);  
+//                     })
+//                 }
+//             })
+//         });
+//         console.log("Test:",resEvent.length);
+//     }).catch(errEvent=>{
+//         console.error("Error:",errEvent);
+//     });
+//     setTimeout(() => {
+//         cronEventRepeat();
+//     }, CRON_INTERVAL);
+// };
+// cronEventRepeat();
 exports.booking = (req,res)=>{
     // TODO: add isPublic
-    EventModel.findOne({_id:req.params.eventid}).then(event=>{
+    EventModel.findOne({_id:req.params.eventid}, function(err, event) {
+        if(err){
+            console.error("Error errDanceClass",errDanceClass.message);
+            res.status(500).send("Booking Error");
+            return;
+        }
         if(event){
             StudentModel.findOne({email:req.body.email,user:event.user}).then(resStudent=>{
                 let studentToSave;
@@ -102,9 +107,6 @@ exports.booking = (req,res)=>{
         }else{
             res.status(400).send("Dance Class not found");
         }
-     }).catch(errDanceClass=>{
-        console.error("Error errDanceClass",errDanceClass.message);
-        res.status(500).send("Booking Error");
      });
 };
 exports.autoCompleteCountry = (req,res)=>{

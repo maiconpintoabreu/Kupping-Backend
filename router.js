@@ -8,7 +8,7 @@ const ticketController = require('./controllers/ticket.controller');
 
 router.get('/public/event', eventController.getEvents);
 router.get('/public/event/:id', eventController.getEvent);
-router.post('/public/event/:eventsid/booking', eventController.booking);
+router.post('/public/event/:eventid/booking', eventController.booking);
 router.get('/public/style', styleController.getStyles);
 router.post('/public/user', checkLogin, userController.insertUser);
 

@@ -23,7 +23,7 @@ services:
             MONGO_PASSWORD: "123asd123z"
             JWT_SECRET: "ma££sanABwinfquw123@@££££€"
         ports:
-            - "8443:8083"
+            - "9443:8083"
         volumes:
             - ".:/backend-kupping"
         depends_on: 

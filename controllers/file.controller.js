@@ -27,6 +27,16 @@ exports.generateTicket = (user,danceClass,student)=>{
         });
     })
 }
+exports.generateTicketQR = (user,danceClass,student)=>{
+    return new Promise(function(resolve, reject){   
+        var qrcode = qr.imageSync(student._id.toString(), { type: 'png' });
+        if(qrcode){
+            resolve(qrcode);
+        }else{
+            reject("ERROR");
+        }
+    })
+}
 
 function generatePdf(path, user,danceClass,student){
     return new Promise(function(resolve, reject){      

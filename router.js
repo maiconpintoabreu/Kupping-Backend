@@ -24,6 +24,7 @@ router.post('/private/event/:id/checkin/:studentId', checkLogin,checkOrganizerAc
 
 router.post('/private/student', checkLogin,checkOrganizerAccess, studentController.insertStudent);
 router.post('/private/event/:id/ticket/send', checkLogin,checkOrganizerAccess, ticketController.send);
+router.get('/private/event/:id/ticket/qrcode/:studentid', checkLogin,checkOrganizerAccess, ticketController.getQRCode);
 router.get('/private/student', checkLogin,checkOrganizerAccess, studentController.getStudentes);
 router.get('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.getStudent);
 router.put('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.updateStudent);

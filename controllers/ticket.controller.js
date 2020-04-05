@@ -1,6 +1,6 @@
 const moduleModel = require("../models/module.model");
 const fileController = require("./file.controller");
-const DanceClass = moduleModel.getEventModel();
+const EventModel = moduleModel.getEventModel();
 const Student = moduleModel.getStudentModel();
 const {google} = require('googleapis');
 const fs = require('fs');
@@ -53,22 +53,22 @@ function getNewToken(oAuth2Client, callback) {
 exports.getQRCode = (req,res) =>{
     if(req.params && req.body){
         if(req.params.id && req.params.id != "undefined" && req.params.studentid && req.params.studentid != "undefined"){
-            DanceClass.findOne({_id:req.params.id}, function(errDanceClass, danceClass) {
-                if(errDanceClass){
-                    res.status(500).json();
+            EventModel.findOne({_id:req.params.id,user:req.client.id}, function(errEvent, event) {
+                if(errEvent){
+                    res.status(500).json(errEvent);
                 }else{
-                    if(danceClass){
-                        const students = danceClass.students.filter(x=>req.params.studentid == x._id);
+                    if(event){
+                        const students = event.students.filter(x=>req.params.studentid == x._id);
                         students.forEach(student=>{
-                            fileController.generateTicketQR(req.client, danceClass, student).then(image=>{
-                                res.status(200).send(new Buffer(image).toString('base64'));
+                            fileController.generateTicketQR(req.client, event, student).then(image=>{
+                                res.status(200).send({type:"png", image:new Buffer(image).toString('base64')});
                             }).catch(errQr=>{
                                 console.error(errQR);
                                 res.status(400).send("Error");
                             })
                         });
                     }else{
-                        res.status(404).json();
+                        res.status(404).json("NOT FOUND");
                     }
                 }
             }).populate("students");
@@ -82,7 +82,7 @@ exports.getQRCode = (req,res) =>{
 exports.send = (req,res)=>{
     if(req.params && req.body){
         if(req.params.id && req.params.id != "undefined" && req.body.length > 0){
-            DanceClass.findOne({_id:req.params.id}, function(errDanceClass, danceClass) {
+            EventModel.findOne({_id:req.params.id}, function(errDanceClass, danceClass) {
                 if(errDanceClass){
                     res.status(500).json();
                 }else{

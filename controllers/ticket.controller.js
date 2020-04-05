@@ -57,26 +57,19 @@ exports.getQRCode = (req,res) =>{
                 if(errDanceClass){
                     res.status(500).json();
                 }else{
-                    const students = danceClass.students.filter(x=>req.params.studentid == x._id);
-                    fs.readFile('oauthkey.json', (err, content) => {
-                        if (err) return console.log('Error loading client secret file:', err);
-                        // Authorize a client with credentials, then call the Gmail API.
-                        authorize(JSON.parse(content), (auth)=>{
-
-                            const gmail = google.gmail({version: 'v1', auth});
-                            let resultEmail = [];
-                            students.forEach(student=>{
-
-                                var email_lines = [];
-                                fileController.generateTicketQR(req.client, danceClass, student).then(image=>{
-                                    res.status(200).send(new Buffer(image).toString('base64'));
-                                }).catch(errQr=>{
-                                    console.error(errQR);
-                                    res.status(400).send("Error");
-                                })
+                    if(danceClass){
+                        const students = danceClass.students.filter(x=>req.params.studentid == x._id);
+                        students.forEach(student=>{
+                            fileController.generateTicketQR(req.client, danceClass, student).then(image=>{
+                                res.status(200).send(new Buffer(image).toString('base64'));
+                            }).catch(errQr=>{
+                                console.error(errQR);
+                                res.status(400).send("Error");
                             })
                         });
-                    }); 
+                    }else{
+                        res.status(404).json();
+                    }
                 }
             }).populate("students");
         }else{

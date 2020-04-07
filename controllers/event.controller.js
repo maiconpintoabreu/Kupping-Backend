@@ -91,8 +91,8 @@ exports.booking = (req,res)=>{
                             }
                         });
                     }else{
-                        danceClass.students.push(resStudent._id);
-                        danceClass.save(errSaveDanceClass=>{
+                        event.students.push(resStudent._id);
+                        event.save(errSaveDanceClass=>{
                             if(errSaveDanceClass){
                                 console.error("Error errSaveDanceClass",errSaveDanceClass.message);
                                 res.status(500).send("Booking Error");

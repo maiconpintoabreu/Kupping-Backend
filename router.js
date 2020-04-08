@@ -12,6 +12,7 @@ router.post('/public/event/:eventid/booking', eventController.booking);
 router.get('/public/style', styleController.getStyles);
 router.post('/public/user', checkLogin, userController.insertUser);
 
+router.delete('/public/event/:eventid/booking/:bookingid', checkLogin,checkOrganizerAccess, eventController.removeBooking);
 router.get('/private/event', checkLogin,checkOrganizerAccess, eventController.getPrivateEvents);
 router.get('/private/eventbystudent', checkLogin,checkOrganizerAccess, eventController.getPrivateEventsByStudent);
 router.get('/private/event/:id', checkLogin,checkOrganizerAccess, eventController.getPrivateEvent);

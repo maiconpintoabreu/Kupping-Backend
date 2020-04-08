@@ -55,6 +55,34 @@ week_of_month = (date) => {
 //     }, CRON_INTERVAL);
 // };
 // cronEventRepeat();
+exports.removeBooking = (req, res)=>{
+    EventModel.findOne({_id:req.params.eventid}, function(err, event) {
+        if(err){
+            console.error("Error errDanceClass",errDanceClass.message);
+            res.status(500).send("Booking Error");
+            return;
+        }
+        if(event){
+            for( var i = 0; i < event.students.length; i++){ 
+                if ( event.students[i]+"" === req.params.bookingid) { 
+                    console.log(event.students[i]);
+                    event.students.splice(i, 1); 
+                }
+            }
+            event.save(errSaveDanceClass=>{
+                if(errSaveDanceClass){
+                    console.error("Error errSaveDanceClass",errSaveDanceClass.message);
+                    res.status(500).send("Booking Error");
+                }else{
+                    res.status(200).send({result:"Success",message:req.params.bookingid+" Removed"});
+                }
+            });
+        }else{
+            res.status(400).send("Event not found");
+        }
+    });
+
+}
 exports.booking = (req,res)=>{
     // TODO: add isPublic
     EventModel.findOne({_id:req.params.eventid}, function(err, event) {
@@ -64,6 +92,9 @@ exports.booking = (req,res)=>{
             return;
         }
         if(event){
+            if(!req.body.email) {
+                req.body.email = new Date().getTime()+"";
+            }
             StudentModel.findOne({email:req.body.email,user:event.user}).then(resStudent=>{
                 let studentToSave;
                 if(resStudent)
@@ -105,7 +136,7 @@ exports.booking = (req,res)=>{
                     
             })
         }else{
-            res.status(400).send("Dance Class not found");
+            res.status(400).send("Event not found");
         }
      });
 };

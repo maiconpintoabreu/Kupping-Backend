@@ -24,14 +24,14 @@ router.post('/private/event', checkLogin,checkOrganizerAccess, eventController.i
 router.post('/private/event/:id/checkin/:attendeeId', checkLogin,checkOrganizerAccess, eventController.checkin);
 
 
-router.post('/private/student', checkLogin,checkOrganizerAccess, studentController.insertAttendee); // TODO: Remove
+router.post('/private/student', checkLogin,checkOrganizerAccess, attendeeController.insertAttendee); // TODO: Remove
 router.post('/private/attendee', checkLogin,checkOrganizerAccess, attendeeController.insertAttendee);
 router.post('/private/event/:id/ticket/send', checkLogin,checkOrganizerAccess, ticketController.send);
 router.get('/private/event/:id/ticket/qrcode/:attendeeid', checkLogin,checkOrganizerAccess, ticketController.getQRCode);
-router.get('/private/student', checkLogin,checkOrganizerAccess, studentController.getAttendeees);
-router.get('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.getAttendee);
-router.put('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.updateAttendee);
-router.delete('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.deleteAttendee);
+router.get('/private/student', checkLogin,checkOrganizerAccess, attendeeController.getAttendeees); // TODO: Remove
+router.get('/private/student/:id', checkLogin,checkOrganizerAccess, attendeeController.getAttendee); // TODO: Remove
+router.put('/private/student/:id', checkLogin,checkOrganizerAccess, attendeeController.updateAttendee); // TODO: Remove
+router.delete('/private/student/:id', checkLogin,checkOrganizerAccess, attendeeController.deleteAttendee); // TODO: Remove
 router.get('/private/attendee', checkLogin,checkOrganizerAccess, attendeeController.getAttendeees);
 router.get('/private/attendee/:id', checkLogin,checkOrganizerAccess, attendeeController.getAttendee);
 router.put('/private/attendee/:id', checkLogin,checkOrganizerAccess, attendeeController.updateAttendee);

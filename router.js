@@ -1,7 +1,7 @@
 var jwt = require('jsonwebtoken');
 const router = require("express").Router();
 const userController = require('./controllers/user.controller');
-const studentController = require('./controllers/student.controller');
+const attendeeController = require('./controllers/attendee.controller');
 const eventController = require('./controllers/event.controller');
 const styleController = require('./controllers/style.controller');
 const ticketController = require('./controllers/ticket.controller');
@@ -14,22 +14,28 @@ router.post('/public/user', checkLogin, userController.insertUser);
 
 router.delete('/private/event/:eventid/booking/:bookingid', checkLogin,checkOrganizerAccess, eventController.removeBooking);
 router.get('/private/event', checkLogin,checkOrganizerAccess, eventController.getPrivateEvents);
-router.get('/private/eventbystudent', checkLogin,checkOrganizerAccess, eventController.getPrivateEventsByStudent);
+router.get('/private/eventbystudent', checkLogin,checkOrganizerAccess, eventController.getPrivateEventsByAttendee); // TODO: Remove
+router.get('/private/eventbyattendee', checkLogin,checkOrganizerAccess, eventController.getPrivateEventsByAttendee);
 router.get('/private/event/:id', checkLogin,checkOrganizerAccess, eventController.getPrivateEvent);
 router.put('/private/event/:id', checkLogin,checkOrganizerAccess, eventController.updateEvent);
 router.delete('/private/event/:id', checkLogin,checkOrganizerAccess, eventController.deleteEvent);
 router.get('/private/style', checkLogin,checkOrganizerAccess, styleController.getPrivateStyles);
 router.post('/private/event', checkLogin,checkOrganizerAccess, eventController.insertEvent);
-router.post('/private/event/:id/checkin/:studentId', checkLogin,checkOrganizerAccess, eventController.checkin);
+router.post('/private/event/:id/checkin/:attendeeId', checkLogin,checkOrganizerAccess, eventController.checkin);
 
 
-router.post('/private/student', checkLogin,checkOrganizerAccess, studentController.insertStudent);
+router.post('/private/student', checkLogin,checkOrganizerAccess, studentController.insertAttendee); // TODO: Remove
+router.post('/private/attendee', checkLogin,checkOrganizerAccess, attendeeController.insertAttendee);
 router.post('/private/event/:id/ticket/send', checkLogin,checkOrganizerAccess, ticketController.send);
-router.get('/private/event/:id/ticket/qrcode/:studentid', checkLogin,checkOrganizerAccess, ticketController.getQRCode);
-router.get('/private/student', checkLogin,checkOrganizerAccess, studentController.getStudentes);
-router.get('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.getStudent);
-router.put('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.updateStudent);
-router.delete('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.deleteStudent);
+router.get('/private/event/:id/ticket/qrcode/:attendeeid', checkLogin,checkOrganizerAccess, ticketController.getQRCode);
+router.get('/private/student', checkLogin,checkOrganizerAccess, studentController.getAttendeees);
+router.get('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.getAttendee);
+router.put('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.updateAttendee);
+router.delete('/private/student/:id', checkLogin,checkOrganizerAccess, studentController.deleteAttendee);
+router.get('/private/attendee', checkLogin,checkOrganizerAccess, attendeeController.getAttendeees);
+router.get('/private/attendee/:id', checkLogin,checkOrganizerAccess, attendeeController.getAttendee);
+router.put('/private/attendee/:id', checkLogin,checkOrganizerAccess, attendeeController.updateAttendee);
+router.delete('/private/attendee/:id', checkLogin,checkOrganizerAccess, attendeeController.deleteAttendee);
 
 router.get("/private/countries", checkLogin,checkOrganizerAccess, eventController.autoCompleteCountry);
 router.get("/private/cities", checkLogin,checkOrganizerAccess, eventController.autoCompleteCity);

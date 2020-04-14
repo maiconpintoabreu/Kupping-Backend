@@ -1,16 +1,16 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 var qr = require('qr-image');
-exports.generateTicket = (user,event,student)=>{
+exports.generateTicket = (user,event,attendee)=>{
     return new Promise(function(resolve, reject){      
-        const path = "/var/tickets/"+user._id+"/"+event._id+"/"+student._id;
+        const path = "/var/tickets/"+user._id+"/"+event._id+"/"+attendee._id;
         fs.stat(path, function(err, stats) {
             if(!stats || !stats.isDirectory()){
                 fs.mkdir(path, { recursive: true }, (err) => {
                     if (err){
                         reject(err);
                     }else{
-                        generatePdf(path,user,event,student).then(pdf=>{
+                        generatePdf(path,user,event,attendee).then(pdf=>{
                             resolve(pdf);
                         }).catch(errGeneratePdf=>{
                             reject(errGeneratePdf);
@@ -18,7 +18,7 @@ exports.generateTicket = (user,event,student)=>{
                     }
                 });
             }else{
-                generatePdf(path,user,event,student).then(pdf=>{
+                generatePdf(path,user,event,attendee).then(pdf=>{
                     resolve(pdf);
                 }).catch(errGeneratePdf=>{
                     reject(errGeneratePdf);
@@ -27,9 +27,9 @@ exports.generateTicket = (user,event,student)=>{
         });
     })
 }
-exports.generateTicketQR = (user,event,student)=>{
+exports.generateTicketQR = (user,event,attendee)=>{
     return new Promise(function(resolve, reject){   
-        var qrcode = qr.imageSync(student._id.toString(), { type: 'png' });
+        var qrcode = qr.imageSync(attendee._id.toString(), { type: 'png' });
         if(qrcode){
             resolve(qrcode);
         }else{
@@ -38,11 +38,11 @@ exports.generateTicketQR = (user,event,student)=>{
     })
 }
 
-function generatePdf(path, user,event,student){
+function generatePdf(path, user,event,attendee){
     return new Promise(function(resolve, reject){      
         const doc = new PDFDocument();
         const stream = doc.pipe(fs.createWriteStream(path+'/ticket.pdf'));
-        var qrcode = qr.imageSync(student._id.toString(), { type: 'png' });
+        var qrcode = qr.imageSync(attendee._id.toString(), { type: 'png' });
         
         doc
         .fontSize(25)

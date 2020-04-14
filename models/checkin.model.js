@@ -7,11 +7,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 let CheckinSchema = new Schema({
     event: { type: mongoose.Schema.Types.ObjectId, ref: 'Event',index:true },
-    student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student',index:true },
+    attendee: { type: mongoose.Schema.Types.ObjectId, ref: 'Attendee',index:true },
     dateCreated: {type: Date, required: true, default:new Date()},
     dateModified: {type: Date, required: true,default:new Date()}
 });
-CheckinSchema.index({event: 1, student: 1}, {unique: true});
+CheckinSchema.index({event: 1, attendee: 1}, {unique: true});
 // CheckinSchema.post("save",(doc)=>{
 //     slack.webhook({
 //       channel: "#kupping-events",

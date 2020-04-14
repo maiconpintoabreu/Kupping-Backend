@@ -2,7 +2,7 @@ const moduleModel = require("../models/module.model");
 const citiesbycountry = require("../models/citiesbycountry").cities;
 const EventModel = moduleModel.getEventModel();
 const PastEventModel = moduleModel.getPastEventModel();
-const StudentModel = moduleModel.getStudentModel();
+const AttendeeModel = moduleModel.getAttendeeModel();
 const CheckinModel = moduleModel.getCheckinModel();
 const moment = require('moment');
 
@@ -30,7 +30,7 @@ week_of_month = (date) => {
 //                 element.toDate = moment(element.toDate).add(1,"weeks").valueOf();
 //                 element.fromDate = moment(element.fromDate).add(1,"weeks").valueOf();
 //             }
-//             element.students = [];
+//             element.attendees = [];
 //             PastEventModel.create(past).then(resPast=>{
 //                 element.save(err=>{
 //                     if(err) console.error("Error current:",err);  
@@ -63,10 +63,10 @@ exports.removeBooking = (req, res)=>{
             return;
         }
         if(event){
-            for( var i = 0; i < event.students.length; i++){ 
-                if ( event.students[i]+"" === req.params.bookingid) { 
-                    console.log(event.students[i]);
-                    event.students.splice(i, 1); 
+            for( var i = 0; i < event.attendees.length; i++){ 
+                if ( event.attendees[i]+"" === req.params.bookingid) { 
+                    console.log(event.attendees[i]);
+                    event.attendees.splice(i, 1); 
                 }
             }
             event.save(errSaveEvent=>{
@@ -95,22 +95,22 @@ exports.booking = (req,res)=>{
             if(!req.body.email) {
                 req.body.email = new Date().getTime()+"";
             }
-            StudentModel.findOne({email:req.body.email,user:event.user}).then(resStudent=>{
-                let studentToSave;
-                if(resStudent)
-                    studentToSave = event.students.find(x=>x == ""+resStudent._id);
-                if(studentToSave){
+            AttendeeModel.findOne({email:req.body.email,user:event.user}).then(resAttendee=>{
+                let attendeeToSave;
+                if(resAttendee)
+                    attendeeToSave = event.attendees.find(x=>x == ""+resAttendee._id);
+                if(attendeeToSave){
                     res.status(302).send("Email already Saved");
                 }else{
-                    studentToSave = new StudentModel(req.body);
-                    studentToSave.user = event.user;
-                    if(!resStudent){
-                        studentToSave.save(errSaveStudent=>{
-                            if(errSaveStudent){
-                                console.error("Error errSaveStudent",errSaveStudent.message);
+                    attendeeToSave = new AttendeeModel(req.body);
+                    attendeeToSave.user = event.user;
+                    if(!resAttendee){
+                        attendeeToSave.save(errSaveAttendee=>{
+                            if(errSaveAttendee){
+                                console.error("Error errSaveAttendee",errSaveAttendee.message);
                                 res.status(500).send("Booking Error");
                             }else{
-                                event.students.push(studentToSave._id);
+                                event.attendees.push(attendeeToSave._id);
                                 event.save(errSaveEvent=>{
                                     if(errSaveEvent){
                                         console.error("Error errSaveEvent",errSaveEvent.message);
@@ -122,7 +122,7 @@ exports.booking = (req,res)=>{
                             }
                         });
                     }else{
-                        event.students.push(resStudent._id);
+                        event.attendees.push(resAttendee._id);
                         event.save(errSaveEvent=>{
                             if(errSaveEvent){
                                 console.error("Error errSaveEvent",errSaveEvent.message);
@@ -160,7 +160,7 @@ exports.getEvents = function (req, res) {
 exports.getEvent = function (req, res) {
     EventModel.findOne({_id:req.params.id}, function(err, event) {
         //filter by public fields
-        event.students = null;
+        event.attendees = null;
         res.status(200).send(event || {});
      }).populate("style");
 };
@@ -169,14 +169,14 @@ exports.getPrivateEvents = function (req, res) {
         res.status(200).send(events || []);
      }).populate("style");
 };
-exports.getPrivateEventsByStudent = function (req, res) {
-    StudentModel.find({email:req.client.email}, function(errStudent,students){
-        let studentParams = [];
-        students.forEach(element=>{
-            studentParams.push({"students":element._id});
+exports.getPrivateEventsByAttendee = function (req, res) {
+    AttendeeModel.find({email:req.client.email}, function(errAttendee,attendees){
+        let attendeeParams = [];
+        attendees.forEach(element=>{
+            attendeeParams.push({"attendees":element._id});
         })
-        EventModel.find({$or:studentParams}, function(err, event) {
-            if(event) event.students = [];
+        EventModel.find({$or:attendeeParams}, function(err, event) {
+            if(event) event.attendees = [];
             res.status(200).send(event || []);
         }).populate("style");
     })
@@ -184,23 +184,23 @@ exports.getPrivateEventsByStudent = function (req, res) {
 exports.getPrivateEvent = function (req, res) {
     EventModel.findOne({_id:req.params.id,user:req.client.id}, function(err, event) {
         res.status(200).send(event || {});
-     }).populate("style").populate("students");
+     }).populate("style").populate("attendees");
 };
 //TODO: make all response send be only 1 method
 exports.checkin = function (req, res) {
-    console.log("id",req.params.id,"studentId",req.params.studentId)
+    console.log("id",req.params.id,"attendeeId",req.params.attendeeId)
     EventModel.findOne({_id:req.params.id,user:req.client.id}, function(err, event) {
         if(event){
-            const student = event.students.find(s=>s._id = req.params.studentId);
-            if(student){
-                CheckinModel.findOne({student:req.params.studentId,event:req.params.id}).then(resCheckinSearch=>{
+            const attendee = event.attendees.find(s=>s._id = req.params.attendeeId);
+            if(attendee){
+                CheckinModel.findOne({attendee:req.params.attendeeId,event:req.params.id}).then(resCheckinSearch=>{
                     if(resCheckinSearch){
-                        res.status(400).send({status:false,message:"Student Already Checkedin "+resCheckinSearch.dateCreated});    
+                        res.status(400).send({status:false,message:"Attendee Already Checkedin "+resCheckinSearch.dateCreated});    
                     }else{
-                        let checkin = new CheckinModel({student:req.params.studentId,event:req.params.id});
+                        let checkin = new CheckinModel({attendee:req.params.attendeeId,event:req.params.id});
                         checkin.save(err=>{
                             if(!err){
-                                res.status(200).send({status:true,message:"Student Checkin Success"});    
+                                res.status(200).send({status:true,message:"Attendee Checkin Success"});    
                             }else{
                                 res.status(500).send({status:false,message:"Error on Checking Checkin"});
                             }
@@ -211,7 +211,7 @@ exports.checkin = function (req, res) {
                     res.status(500).send({status:false,message:"Error on Checking Checkin"});    
                 })
             }else{
-                res.status(404).send({status:true,message:"Student Not Found"})    
+                res.status(404).send({status:true,message:"Attendee Not Found"})    
             }
         }else{
             if(err){
@@ -219,13 +219,13 @@ exports.checkin = function (req, res) {
             }else
             res.status(404).send({status:true,message:"Event Not Found"})   
         }
-     }).populate("style").populate("students").catch(err=>{
+     }).populate("style").populate("attendees").catch(err=>{
          res.status(404).send(false)
      });
 }
 exports.insertEvent = function (req, res) {
     req.body.user = req.client.id;
-    delete(req.body.students);
+    delete(req.body.attendees);
     if(!req.body.fromDateDay){
         const fromDateMoment = moment(req.body.fromDate);
         req.body.fromDateDay = fromDateMoment.startOf('day');
@@ -270,7 +270,7 @@ exports.updateEvent = function (req, res) {
                 res.status(404).send({status:true,message:"Event Not Found"})
             }else{
                 if(!req.body.repeat || req.body.repeat === "" || req.body.repeat === "monthly" || req.body.repeat === "weekly" ){
-                    req.body.students = event.students;
+                    req.body.attendees = event.attendees;
                     event = new EventModel(req.body);
                     EventModel.updateOne({"_id":req.params.id},event,function(err2){
                         if(err2){

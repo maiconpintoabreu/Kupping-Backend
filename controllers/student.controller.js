@@ -1,30 +1,30 @@
 const moduleModel = require("../models/module.model");
-const Student = moduleModel.getStudentModel();
-exports.getStudentes = function (req, res) {
-    Student.find({user:req.client.id}, function(err, studentes) {
+const Attendee = moduleModel.getAttendeeModel();
+exports.getAttendeees = function (req, res) {
+    Attendee.find({user:req.client.id}, function(err, attendeees) {
         if(err){
             res.status(500).send(err.message);
         }else{
-            res.status(200).send(studentes || []);
+            res.status(200).send(attendeees || []);
         }
      });
 };
-exports.getStudent = function (req, res) {
-    Student.findOne({_id:req.params.id,user:req.client.id}, function(err, student) {
+exports.getAttendee = function (req, res) {
+    Attendee.findOne({_id:req.params.id,user:req.client.id}, function(err, attendee) {
         if(err){
             res.status(500).send(err.message);
         }else{
-            res.status(200).send(student || {});
+            res.status(200).send(attendee || {});
         }
      });
 };
-exports.insertStudent = function (req, res) {
-    const student = new Student({
+exports.insertAttendee = function (req, res) {
+    const attendee = new Attendee({
         name: req.body.name,
         email: req.body.email,
         user: req.client.id,
     });
-    student.save(function (err, results) {
+    attendee.save(function (err, results) {
         if(err) {
             console.error("Error",err);
             res.status(500).send(err);
@@ -32,29 +32,29 @@ exports.insertStudent = function (req, res) {
         res.status(200).send(results);
       });
 };
-exports.deleteStudent = function (req, res) {
-    Student.deleteOne({_id:req.params.id}, function(err){
+exports.deleteAttendee = function (req, res) {
+    Attendee.deleteOne({_id:req.params.id}, function(err){
         if(err){
             res.status(500).send(err.message);
         }else{
-            res.status(200).send(JSON.stringify({"text":"Student Deleted"}));
+            res.status(200).send(JSON.stringify({"text":"Attendee Deleted"}));
         }
     });
 };
-exports.updateStudent = function (req, res) {
-    Student.findById(req.params.id, function(err, student) {
+exports.updateAttendee = function (req, res) {
+    Attendee.findById(req.params.id, function(err, attendee) {
         if(err){
             res.status(500).send(err.message);
         }else{
-            if(!student){
-                res.status(404).send(JSON.stringify({"text":"Student Not Found"}));
+            if(!attendee){
+                res.status(404).send(JSON.stringify({"text":"Attendee Not Found"}));
             }else{
-                student.name = req.body.name;
-                Student.updateOne({"_id":req.params.id},student,function(err2){
+                attendee.name = req.body.name;
+                Attendee.updateOne({"_id":req.params.id},attendee,function(err2){
                     if(err2){
-                        res.status(404).send(JSON.stringify({"text":"Student Not Found"}));
+                        res.status(404).send(JSON.stringify({"text":"Attendee Not Found"}));
                     }else{
-                        res.status(200).send(JSON.stringify({"text":"Student Updated"}));
+                        res.status(200).send(JSON.stringify({"text":"Attendee Updated"}));
                     }
                 });
             }

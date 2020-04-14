@@ -82,11 +82,11 @@ exports.getQRCode = (req,res) =>{
 exports.send = (req,res)=>{
     if(req.params && req.body){
         if(req.params.id && req.params.id != "undefined" && req.body.length > 0){
-            EventModel.findOne({_id:req.params.id}, function(errDanceClass, danceClass) {
-                if(errDanceClass){
+            EventModel.findOne({_id:req.params.id}, function(errEvent, event) {
+                if(errEvent){
                     res.status(500).json();
                 }else{
-                    const students = danceClass.students.filter(x=>req.body.find(y=>y == x._id));
+                    const students = event.students.filter(x=>req.body.find(y=>y == x._id));
                     fs.readFile('oauthkey.json', (err, content) => {
                         if (err) return console.log('Error loading client secret file:', err);
                         // Authorize a client with credentials, then call the Gmail API.
@@ -97,13 +97,13 @@ exports.send = (req,res)=>{
                             students.forEach(student=>{
 
                                 var email_lines = [];
-                                fileController.generateTicket(req.client, danceClass, student).then(doc=>{
+                                fileController.generateTicket(req.client, event, student).then(doc=>{
                                     let mail = new MailComposer({
                                         from:'"Kupping" <maiconpintoabreu@gmail.com>',
                                         to: student.email,
                                         text: "",
                                         html: "Hello "+student.name+",<br>Show this ticket on the event:<br>",
-                                        subject: "Your ticket for "+danceClass.name,
+                                        subject: "Your ticket for "+event.name,
                                         textEncoding: "base64",
                                         attachments: [
                                         {   // encoded string as an attachment

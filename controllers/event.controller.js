@@ -58,7 +58,7 @@ week_of_month = (date) => {
 exports.removeBooking = (req, res)=>{
     EventModel.findOne({_id:req.params.eventid}, function(err, event) {
         if(err){
-            console.error("Error errDanceClass",errDanceClass.message);
+            console.error("Error errEvent",errEvent.message);
             res.status(500).send("Booking Error");
             return;
         }
@@ -69,9 +69,9 @@ exports.removeBooking = (req, res)=>{
                     event.students.splice(i, 1); 
                 }
             }
-            event.save(errSaveDanceClass=>{
-                if(errSaveDanceClass){
-                    console.error("Error errSaveDanceClass",errSaveDanceClass.message);
+            event.save(errSaveEvent=>{
+                if(errSaveEvent){
+                    console.error("Error errSaveEvent",errSaveEvent.message);
                     res.status(500).send("Booking Error");
                 }else{
                     res.status(200).send({result:"Success",message:req.params.bookingid+" Removed"});
@@ -87,7 +87,7 @@ exports.booking = (req,res)=>{
     // TODO: add isPublic
     EventModel.findOne({_id:req.params.eventid}, function(err, event) {
         if(err){
-            console.error("Error errDanceClass",errDanceClass.message);
+            console.error("Error errEvent",errEvent.message);
             res.status(500).send("Booking Error");
             return;
         }
@@ -123,9 +123,9 @@ exports.booking = (req,res)=>{
                         });
                     }else{
                         event.students.push(resStudent._id);
-                        event.save(errSaveDanceClass=>{
-                            if(errSaveDanceClass){
-                                console.error("Error errSaveDanceClass",errSaveDanceClass.message);
+                        event.save(errSaveEvent=>{
+                            if(errSaveEvent){
+                                console.error("Error errSaveEvent",errSaveEvent.message);
                                 res.status(500).send("Booking Error");
                             }else{
                                 res.status(200).send({result:"Success",recurrent:true});

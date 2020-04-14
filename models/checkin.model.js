@@ -6,12 +6,12 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 let CheckinSchema = new Schema({
-    danceClass: { type: mongoose.Schema.Types.ObjectId, ref: 'DanceClass',index:true },
+    event: { type: mongoose.Schema.Types.ObjectId, ref: 'Event',index:true },
     student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student',index:true },
     dateCreated: {type: Date, required: true, default:new Date()},
     dateModified: {type: Date, required: true,default:new Date()}
 });
-CheckinSchema.index({danceClass: 1, student: 1}, {unique: true});
+CheckinSchema.index({event: 1, student: 1}, {unique: true});
 // CheckinSchema.post("save",(doc)=>{
 //     slack.webhook({
 //       channel: "#kupping-events",

@@ -1,16 +1,16 @@
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 var qr = require('qr-image');
-exports.generateTicket = (user,danceClass,student)=>{
+exports.generateTicket = (user,event,student)=>{
     return new Promise(function(resolve, reject){      
-        const path = "/var/tickets/"+user._id+"/"+danceClass._id+"/"+student._id;
+        const path = "/var/tickets/"+user._id+"/"+event._id+"/"+student._id;
         fs.stat(path, function(err, stats) {
             if(!stats || !stats.isDirectory()){
                 fs.mkdir(path, { recursive: true }, (err) => {
                     if (err){
                         reject(err);
                     }else{
-                        generatePdf(path,user,danceClass,student).then(pdf=>{
+                        generatePdf(path,user,event,student).then(pdf=>{
                             resolve(pdf);
                         }).catch(errGeneratePdf=>{
                             reject(errGeneratePdf);
@@ -18,7 +18,7 @@ exports.generateTicket = (user,danceClass,student)=>{
                     }
                 });
             }else{
-                generatePdf(path,user,danceClass,student).then(pdf=>{
+                generatePdf(path,user,event,student).then(pdf=>{
                     resolve(pdf);
                 }).catch(errGeneratePdf=>{
                     reject(errGeneratePdf);
@@ -27,7 +27,7 @@ exports.generateTicket = (user,danceClass,student)=>{
         });
     })
 }
-exports.generateTicketQR = (user,danceClass,student)=>{
+exports.generateTicketQR = (user,event,student)=>{
     return new Promise(function(resolve, reject){   
         var qrcode = qr.imageSync(student._id.toString(), { type: 'png' });
         if(qrcode){
@@ -38,7 +38,7 @@ exports.generateTicketQR = (user,danceClass,student)=>{
     })
 }
 
-function generatePdf(path, user,danceClass,student){
+function generatePdf(path, user,event,student){
     return new Promise(function(resolve, reject){      
         const doc = new PDFDocument();
         const stream = doc.pipe(fs.createWriteStream(path+'/ticket.pdf'));
@@ -46,10 +46,10 @@ function generatePdf(path, user,danceClass,student){
         
         doc
         .fontSize(25)
-        .text(danceClass.name, 100, 100);
+        .text(event.name, 100, 100);
         doc
         .fontSize(16)
-        .text(danceClass.about);
+        .text(event.about);
         
         doc.image(qrcode, {
         align: 'right',

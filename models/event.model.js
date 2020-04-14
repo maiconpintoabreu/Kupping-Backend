@@ -20,7 +20,7 @@ let EventSchema = new Schema({
     toDateDay: {type: Number, required: false},
     place: { type: Place, ref: 'Place' },
     repeat: { type:String,index:true},
-    students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }],
+    attendees: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Attendee' }],
     style: { type: mongoose.Schema.Types.ObjectId, ref: 'Style' },
     dateCreated: {type: Date, required: true, default:new Date()},
     dateModified: {type: Date, required: true, default:new Date()},

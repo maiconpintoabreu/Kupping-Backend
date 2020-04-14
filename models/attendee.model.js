@@ -5,7 +5,7 @@ let slack = new Slack();
 slack.setWebhook(webhookUri);
 
 const Schema = mongoose.Schema;
-let StudentSchema = new Schema({
+let AttendeeSchema = new Schema({
     name: {type: String, required: true,index: true},
     email: {type: String, required: true,index: true},
     dateOfBirth: {type: String, required: false},
@@ -13,8 +13,8 @@ let StudentSchema = new Schema({
     dateModified: {type: Date, required: true,default:new Date()},
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
-StudentSchema.index({user: 1, email: 1}, {unique: true});
-// StudentSchema.post("save",(doc)=>{
+AttendeeSchema.index({user: 1, email: 1}, {unique: true});
+// AttendeeSchema.post("save",(doc)=>{
 //     slack.webhook({
 //       channel: "#kupping-events",
 //       username: "kuppingbot",
@@ -23,4 +23,4 @@ StudentSchema.index({user: 1, email: 1}, {unique: true});
 //       //console.log(response);
 //     });
 // });
-module.exports =  mongoose.model("Student",StudentSchema);
+module.exports =  mongoose.model("Attendee",AttendeeSchema);

@@ -69,11 +69,11 @@ function checkLogin(req,res,next) {
 }
 function checkOrganizerAccess(req,res,next) {
     if(req.client){
-        if(req.client.organizer){
+        // if(req.client.organizer){
             return next();
-        }else{
-            res.status(403).send("Only for Organizer account");
-        }
+        // }else{
+        //     res.status(403).send("Only for Organizer account");
+        // }
     }else{
         res.status(401).send("Token not valid");
     }

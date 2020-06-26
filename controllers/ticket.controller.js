@@ -1,7 +1,7 @@
 const moduleModel = require("../models/module.model");
 const fileController = require("./file.controller");
 const EventModel = moduleModel.getEventModel();
-const Student = moduleModel.getStudentModel();
+const Attendee = moduleModel.getAttendeeModel();
 const {google} = require('googleapis');
 const fs = require('fs');
 const readline = require('readline');
@@ -52,15 +52,15 @@ function getNewToken(oAuth2Client, callback) {
 }
 exports.getQRCode = (req,res) =>{
     if(req.params && req.body){
-        if(req.params.id && req.params.id != "undefined" && req.params.studentid && req.params.studentid != "undefined"){
+        if(req.params.id && req.params.id != "undefined" && req.params.attendeeid && req.params.attendeeid != "undefined"){
             EventModel.findOne({_id:req.params.id,user:req.client.id}, function(errEvent, event) {
                 if(errEvent){
                     res.status(500).json(errEvent);
                 }else{
                     if(event){
-                        const students = event.students.filter(x=>req.params.studentid == x._id);
-                        students.forEach(student=>{
-                            fileController.generateTicketQR(req.client, event, student).then(image=>{
+                        const attendees = event.attendees.filter(x=>req.params.attendeeid == x._id);
+                        attendees.forEach(attendee=>{
+                            fileController.generateTicketQR(req.client, event, attendee).then(image=>{
                                 res.status(200).send({type:"png", image:new Buffer(image).toString('base64')});
                             }).catch(errQr=>{
                                 console.error(errQR);
@@ -71,7 +71,7 @@ exports.getQRCode = (req,res) =>{
                         res.status(404).json("NOT FOUND");
                     }
                 }
-            }).populate("students");
+            }).populate("attendees");
         }else{
             res.status(500).json("Error");
         }
@@ -82,11 +82,11 @@ exports.getQRCode = (req,res) =>{
 exports.send = (req,res)=>{
     if(req.params && req.body){
         if(req.params.id && req.params.id != "undefined" && req.body.length > 0){
-            EventModel.findOne({_id:req.params.id}, function(errDanceClass, danceClass) {
-                if(errDanceClass){
+            EventModel.findOne({_id:req.params.id}, function(errEvent, event) {
+                if(errEvent){
                     res.status(500).json();
                 }else{
-                    const students = danceClass.students.filter(x=>req.body.find(y=>y == x._id));
+                    const attendees = event.attendees.filter(x=>req.body.find(y=>y == x._id));
                     fs.readFile('oauthkey.json', (err, content) => {
                         if (err) return console.log('Error loading client secret file:', err);
                         // Authorize a client with credentials, then call the Gmail API.
@@ -94,16 +94,16 @@ exports.send = (req,res)=>{
 
                             const gmail = google.gmail({version: 'v1', auth});
                             let resultEmail = [];
-                            students.forEach(student=>{
+                            attendees.forEach(attendee=>{
 
                                 var email_lines = [];
-                                fileController.generateTicket(req.client, danceClass, student).then(doc=>{
+                                fileController.generateTicket(req.client, event, attendee).then(doc=>{
                                     let mail = new MailComposer({
                                         from:'"Kupping" <maiconpintoabreu@gmail.com>',
-                                        to: student.email,
+                                        to: attendee.email,
                                         text: "",
-                                        html: "Hello "+student.name+",<br>Show this ticket on the event:<br>",
-                                        subject: "Your ticket for "+danceClass.name,
+                                        html: "Hello "+attendee.name+",<br>Show this ticket on the event:<br>",
+                                        subject: "Your ticket for "+event.name,
                                         textEncoding: "base64",
                                         attachments: [
                                         {   // encoded string as an attachment
@@ -131,13 +131,13 @@ exports.send = (req,res)=>{
                                         }, (err, result) => {
 
                                             if(!err){
-                                                resultEmail.push({email:student.email,success:true});
-                                                if(resultEmail.length == students.length)
+                                                resultEmail.push({email:attendee.email,success:true});
+                                                if(resultEmail.length == attendees.length)
                                                     res.status(200).json(resultEmail);
                                             }else{
-                                                resultEmail.push({email:student.email,success:false});
+                                                resultEmail.push({email:attendee.email,success:false});
                                                 console.error("errEmail",err);
-                                                if(resultEmail.length == students.length)
+                                                if(resultEmail.length == attendees.length)
                                                     res.status(200).json(resultEmail);
                                             }
                                         });
@@ -151,7 +151,7 @@ exports.send = (req,res)=>{
                         });
                     }); 
                 }
-            }).populate("students");
+            }).populate("attendees");
         }else{
             res.status(500).json("Error");
         }

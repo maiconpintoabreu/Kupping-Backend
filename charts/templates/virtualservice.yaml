@@ -13,7 +13,7 @@ spec:
   tls:
   - match:
     - port: {{ .Values.service.externalPortSSL }}
-      sni_hosts:
+      sniHosts:
 {{- range .Values.hosts}}
       - {{ . | quote }}
 {{end}}

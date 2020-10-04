@@ -2,7 +2,7 @@ apiVersion: skaffold/v1beta7
 kind: Config
 build:
   artifacts:
-  - image: eu.gcr.io/k3s-tests/kupping/backend
+  - image: eu.gcr.io/k3s-tests/kupping-lite/backend
     context: .
 deploy:
   kubectl:
